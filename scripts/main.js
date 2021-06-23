@@ -6,10 +6,12 @@ function iniatialize() {
 }
 
 function playInitialVideo() {
-    let video = document.querySelector('#initialVideo')
+    /*let video = document.querySelector('#initialVideo')
 
     video.classList.remove('d-none')
-    video.play()
+    video.play()*/
+
+    startGame()
 }
 
 // Inicializa tudo (animação, menu, jogo, etc)
