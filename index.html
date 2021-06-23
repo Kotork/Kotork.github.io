@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Discovery</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body onload="iniatialize();">
+    <!-- GALERIA DE IMAGENS -->
+    <img id="itemLucky" src="./assets/Images/question.png" class="d-none">
+    <img id="itemReward" src="./assets/Images/Star.png" class="d-none">
+    <img id="enemyRedRight" src="./assets/Images/redRight.png" class="d-none">
+    <img id="enemyBlueRight" src="./assets/Images/blueRight.png" class="d-none">
+    <img id="bossRight" src="./assets/Images/robotRight.png" class="d-none">
+    <img id="identity1Sprite" src="./assets/Images/UpDown Dourado.png" class="d-none">
+    <img id="identity2Sprite" src="./assets/Images/UpDown Prateado.png" class="d-none">
+    <!-- FIM GALERIA DE IMAGENS -->
+
+    <!-- GALERIA DE SONS -->
+    <audio id="laserSound" src="./assets/Sons/efeitos/laser.wav">
+        O seu <em>browser</em> não suporta o elemento <code>audio</code>!
+    </audio>
+
+    <audio id="level1" src="./assets/Sons/nightvision.mp3">
+        O seu <em>browser</em> não suporta o elemento <code>audio</code>!
+    </audio>
+    <audio id="level2" src="./assets/Sons/voyager.mp3">
+        O seu <em>browser</em> não suporta o elemento <code>audio</code>!
+    </audio>
+    <audio id="level3" src="./assets/Sons/shortCircuit.mp3">
+        O seu <em>browser</em> não suporta o elemento <code>audio</code>!
+    </audio>
+    <audio id="finalBoss" src="./assets/Sons/aerodynamic.mp3">
+        O seu <em>browser</em> não suporta o elemento <code>audio</code>!
+    </audio>
+    <!-- FIM GALERIA DE SONS -->
+
+    <video id="initialVideo" onended="startGame()" class="d-none">
+        <source src="./assets/videos/Intro.mp4" type="video/mp4">
+        O teu browser não suporta elementos de vídeo.
+    </video>
+
+    <video id="finalVideo" onended="openMenuFinal()" class="d-none">
+        <source src="./assets/videos/explosaoFinal.mp4" type="video/mp4">
+        O teu browser não suporta elementos de vídeo.
+    </video>
+
+    <!-- Para abrir as modals -->
+    <button id="buttonOpenMenuInitial" type="button" class="btn btn-dark d-none" data-bs-toggle="modal" data-bs-target="#menuInitial">INICIAR</button>
+    <button id="buttonOpenMenuPaused" type="button" class="btn btn-dark d-none" data-bs-toggle="modal" data-bs-target="#menuPaused">PAUSA</button>
+    <button id="buttonOpenMenuFinal" type="button" class="btn btn-dark d-none" data-bs-toggle="modal" data-bs-target="#menuFinal">FINAL</button>
+
+    <canvas id="canvas" width="800" height="600">
+        O seu browser não suporta canvas
+    </canvas>
+
+    <!-- Modal Inicial -->
+    <div class="modal fade" id="menuInitial" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row mb-3">
+                            <div class="col-12 d-flex justify-content-center">
+                                <span class="soundButton" onclick="musicControls()">
+                                    <svg id="soundButtonActiveInitial" class="soundButtonActive" width="24" height="24" viewBox="0 0 24 24"><path d="M9 18h-7v-12h7v12zm2-12v12l11 6v-24l-11 6z"/></svg>
+                                    <svg id="soundButtonInactiveInitial" class="soundButtonInactive d-none" width="24" height="24" viewBox="0 0 24 24"><path d="M22 1.269l-18.455 22.731-1.545-1.269 3.841-4.731h-1.827v-10h4.986v6.091l2.014-2.463v-3.628l5.365-2.981 4.076-5.019 1.545 1.269zm-10.986 15.926v.805l8.986 5v-16.873l-8.986 11.068z"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-6 col-6">
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <h1>SELECIONA UM JOGADOR</h1>
+                                    </div>
+                                </div>
+
+                               <div class="row mb-5">
+                                    <div class="col-6 d-flex justify-content-center">
+                                        <div class="d-flex flex-column justify-content-center align-items-center">
+                                            <p>Identidade 1</p>
+                                            <img id="identity1" class="identityImage mb-2 active" onclick="selectPlayer('identity1')" src="./assets/Images/dourado.png" alt="Identidade 1">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6 d-flex justify-content-center">
+                                        <div class="d-flex flex-column justify-content-center align-items-center">
+                                            <p>Identidade 2</p>
+                                            <img id="identity2" class="identityImage mb-2" onclick="selectPlayer('identity2')" src="./assets/Images/prateado.png" alt="Identidade 2">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="playerName" placeholder="João">
+                                            <label for="playerName">Nome do Jogador</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" class="btn btn-light" onclick="playInitialVideo()" data-bs-dismiss="modal" aria-label="Close">JOGAR</button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <a href="./assets/manualjogo.pdf" target="_blank">
+                                            <button type="button" class="btn btn-outline-light">MANUAL DE INSTRUÇÕES</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal da Pausa -->
+    <div class="modal fade" id="menuPaused" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row mb-3">
+                            <div class="col-12 d-flex justify-content-center">
+                                <span class="soundButton" onclick="musicControls()">
+                                    <svg id="soundButtonActivePaused" class="soundButtonActive" width="24" height="24" viewBox="0 0 24 24"><path d="M9 18h-7v-12h7v12zm2-12v12l11 6v-24l-11 6z"/></svg>
+                                    <svg id="soundButtonInactivePaused" class="soundButtonInactive d-none" width="24" height="24" viewBox="0 0 24 24"><path d="M22 1.269l-18.455 22.731-1.545-1.269 3.841-4.731h-1.827v-10h4.986v6.091l2.014-2.463v-3.628l5.365-2.981 4.076-5.019 1.545 1.269zm-10.986 15.926v.805l8.986 5v-16.873l-8.986 11.068z"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-6 col-6">
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <h1>MENU</h1>
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" aria-label="Close">RETOMAR O JOGO</button>
+                                   </div>
+                               </div>
+                               <div class="row mb-5">
+                                   <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" aria-label="Close" data-bs-toggle="modal" data-bs-target="#menuInitial" onclick="endMidGame()">SAIR</button>
+                                  </div>
+                              </div>
+                               <div class="row">
+                                   <div class="col-12 d-flex justify-content-center">
+                                        <a href="./assets/manualjogo.pdf" target="_blank">
+                                            <button type="button" class="btn btn-outline-light">MANUAL DE INSTRUÇÕES</button>
+                                        </a>
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+      <!-- Modal Final -->
+      <div class="modal fade" id="menuFinal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row mb-3">
+                            <div class="col-12 d-flex justify-content-center">
+                                <span class="soundButton" onclick="musicControls()">
+                                    <svg id="soundButtonActiveFinal" class="soundButtonActive" width="24" height="24" viewBox="0 0 24 24"><path d="M9 18h-7v-12h7v12zm2-12v12l11 6v-24l-11 6z"/></svg>
+                                    <svg id="soundButtonInactiveFinal" class="soundButtonInactive d-none" width="24" height="24" viewBox="0 0 24 24"><path d="M22 1.269l-18.455 22.731-1.545-1.269 3.841-4.731h-1.827v-10h4.986v6.091l2.014-2.463v-3.628l5.365-2.981 4.076-5.019 1.545 1.269zm-10.986 15.926v.805l8.986 5v-16.873l-8.986 11.068z"/></svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-6 col-6">
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <h1 id="finalMessage">GAME OVER</h1>
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <p>A tua pontuação é:</p>
+                                   </div>
+                               </div>
+
+                               <div class="row mb-5">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <h2 id="finalScore">100</h2>
+                                    </div>
+                                </div>
+                               <div class="row mb-5">
+                                   <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" aria-label="Close" data-bs-toggle="modal" data-bs-target="#menuInitial">SAIR</button>
+                                  </div>
+                              </div>
+                               <div class="row mb-5">
+                                   <div class="col-12 d-flex justify-content-center">
+                                        <table class="table table-dark table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th>
+                                                        Nome do Jogador
+                                                    </th>
+                                                    <th>
+                                                        Pontuação
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="gameHistory">
+
+                                            </tbody>
+                                        </table>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+    <script src="scripts/main.js" defer></script>
+    <script src="scripts/helper.js" defer></script>
+    <script src="scripts/game.js" defer></script>
+    <script src="scripts/map.js" defer></script>
+    <script src="scripts/room.js" defer></script>
+    <script src="scripts/items.js" defer></script>
+    <script src="scripts/player.js" defer></script>
+    <script src="scripts/enemy.js" defer></script>
+    <script src="scripts/ElementosJogo.js" defer></script>
+
+</body>
+</html>
